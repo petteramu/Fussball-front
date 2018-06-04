@@ -9,8 +9,8 @@
 		</div>
 		<div id="leftContainer" class="leftContainer">
 			<div class="menuContainer">
-				<SubmitGamePopup v-on:submit="onSubmitMatch"></SubmitGamePopup>
-				<AddPlayer v-on:submit="onSubmitPlayer"></AddPlayer>
+				<button @click="showAddGameForm()">Submit game</button>
+				<button v-on:click="showAddPlayerForm()">Add player</button>
 			</div>
 			<MatchHistory></MatchHistory>
 			<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
@@ -21,19 +21,15 @@
 <script>
 import _ from 'lodash'
 import * as firebase from 'firebase'
-import Elo from './libs/elo'
-import ChartGenerator from './libs/ChartGenerator'
-import MatchupTransformer from './libs/MatchupTableTransformer'
-import Model from './libs/Model'
+import { mapGetters, mapMutations } from 'vuex'
+import Tab from './components/Tab'
 import RankingList from './components/RankingList'
-import SubmitGamePopup from './components/SubmitGamePopup'
 import MatchHistory from './components/MatchHistory'
 import MatchupTable from './components/MatchupTable'
 import TimelineChart from './components/TimelineChart'
-import AddPlayer from './components/AddPlayer'
-import Tab from './components/Tab'
+import AddPlayerForm from './components/AddPlayerForm'
+import AddGameForm from './components/AddGameForm'
 import PopupContainer from './components/PopupContainer'
-import { mapGetters } from 'vuex'
 
 export default {
 	name: 'app',
@@ -74,26 +70,21 @@ export default {
 		...mapGetters(['versusTableData', 'teammateTableData', 'weeklyChartData', 'dailyChartData'])
 	},
 	methods: {
-		onSubmitPlayer (name) {
-			Model.addPlayer(name)
+		showAddPlayerForm () {
+			this.setActivePopup(AddPlayerForm)
 		},
-		getPlayer (name) {
-			for(let key in this.transformedPlayers) {
-				if(this.transformedPlayers[key].name == name)
-					return this.transformedPlayers[key]
-			}
+		showAddGameForm () {
+			this.setActivePopup(AddGameForm)
 		},
-		onSubmitMatch (game) {
-			Model.submitGame(game)
-		}
+		...mapMutations(['setActivePopup'])
 	},
 	components: {
 		RankingList,
-		SubmitGamePopup,
 		MatchHistory,
 		MatchupTable,
 		TimelineChart,
-		AddPlayer,
+		AddPlayerForm,
+		AddGameForm,
 		PopupContainer,
 		Tab
 	}

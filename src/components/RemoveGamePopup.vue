@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import _ from 'lodash'
 
 export default {
@@ -48,7 +48,8 @@ export default {
 			this.resetRemoveMatchObject()
 			this.resetActivePopup()
 		},
-		...mapActions(['removeMatch', 'resetRemoveMatchObject', 'resetActivePopup'])
+		...mapActions(['removeMatch']),
+		...mapMutations(['resetRemoveMatchObject', 'resetActivePopup'])
 	}
 }
 

@@ -15,8 +15,8 @@ export default {
 				total = player.wins + player.losses
 
 			let weekAgo = new Date()
-			weekAgo.setDate(weekAgo.getDate() - 7)
-			if (player.lastUpdated < weekAgo)
+			weekAgo.setDate(weekAgo.getDate() - 14)
+			if (player.lastUpdated < weekAgo || total < 3)
 				mmr = '-'
 			else
 				mmr = Math.floor(state.players[key].ranking)
@@ -28,7 +28,8 @@ export default {
 				name: key,
 				mmr: mmr,
 				winrate: winrate,
-				streak: player.streak
+				streak: player.streak,
+				icon: player.icon
 			}
 		})
 		rankings = _.values(rankings)

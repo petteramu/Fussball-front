@@ -1,38 +1,36 @@
 <template>
 	<div id="addPlayer" class="add-player">
-		<button id="addPlayerButton" v-on:click="showPopup=true">Add player</button>
-		<div class="backgroundFade" v-if="showPopup" v-on:click="showPopup=false"></div>
-		<div v-if="showPopup" id="popupContainer" class="popupContainer">
-			<button class='close' v-on:click="showPopup=false">X</button>
-			<form id="add-player-form">
-				<h2>Add player</h2>
-				<div class="boxContainer">
-					<span class="box">
-						<input type="text" id="playerName" placeholder="Name" />
-					</span>
-				</div>
-				<input type="submit" v-on:click="onSubmit">
-			</form>
-		</div>
+		<form id="add-player-form">
+			<h2>Add player</h2>
+			<div class="boxContainer">
+				<span class="box">
+					<input type="text" id="playerName" v-model="name" placeholder="Name" />
+				</span>
+			</div>
+			<input type="submit" v-on:click="onSubmit">
+		</form>
 	</div>
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
 export default {
-	name: 'AddPlayer',
-	data () {
+	name: 'AddPlayerForm',
+	data: function() {
 		return {
-			showPopup: false
+			name: undefined
 		}
 	},
 	methods: {
 		onSubmit (e) {
 			e.preventDefault()
-			let name = document.getElementById("playerName").value
-			if(name != '' && name != undefined)
-				this.$store.dispatch('addPlayer', name.toLowerCase())
-			this.showPopup = false
-		}
+			if(this.name != '' && this.name != undefined) {
+				this.addPlayer(this.name.toLowerCase())
+				this.resetActivePopup()
+			}
+		},
+		...mapMutations(['resetActivePopup']),
+		...mapActions(['addPlayer'])
 	}
 }
 </script>

@@ -14,7 +14,7 @@ export default {
 	setRemoveMatchObject(state, payload) {
 		state.removeMatchObject = payload
 	},
-	resetRemoveMatchObhect(state) {
+	resetRemoveMatchObject(state) {
 		state.removeMatchObject = undefined
 	}
 }

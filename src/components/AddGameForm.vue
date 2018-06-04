@@ -42,7 +42,7 @@
 
 <script>
 import _ from 'lodash'
-import { mapState } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
 	name: 'AddGameForm',
@@ -70,11 +70,12 @@ export default {
 				alert("Error: Two or more players are the same")
 				return
 			}
-			this.$store.dispatch('addMatch', {
+			this.addMatch({
 				difference: this.activeDifference,
 				winners: this.winners,
 				losers: this.losers
 			})
+			this.resetActivePopup()
 		},
 
 		toggleWinner (name) {
@@ -99,7 +100,9 @@ export default {
 			else {
 				this.losers.push(name)
 			}
-		}
+		},
+		...mapActions(['addMatch']),
+		...mapMutations(['resetActivePopup'])
 	}
 }
 </script>

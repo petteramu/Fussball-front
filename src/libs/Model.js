@@ -3,8 +3,8 @@ import FirebaseConfig from '../configs/FirebaseConfig'
 import LambdaConfig from '../configs/LambdaConfig'
 
 const DEFAULT_KFACTOR = 32
-const PLAYERS_URL = '/players/'
-const MATCHES_URL = '/matches/'
+const PLAYERS_URL = 'season3/players/'
+const MATCHES_URL = 'season3/matches/'
 
 export default {
 	listeners: {},
