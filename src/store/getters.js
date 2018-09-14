@@ -14,12 +14,7 @@ export default {
 			if(player.wins != null && player.losses != null)
 				total = player.wins + player.losses
 
-			let weekAgo = new Date()
-			weekAgo.setDate(weekAgo.getDate() - 14)
-			if (player.lastUpdated < weekAgo || total < 3)
-				mmr = '-'
-			else
-				mmr = Math.floor(state.players[key].ranking)
+			mmr = Math.floor(state.players[key].ranking)
 
 			if(total > 0)
 				winrate = Math.floor((player.wins * 100) / (player.wins + player.losses))

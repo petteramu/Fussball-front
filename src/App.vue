@@ -12,7 +12,7 @@
 				<button @click="showAddGameForm()">Submit game</button>
 				<button v-on:click="showAddPlayerForm()">Add player</button>
 			</div>
-			<MatchHistory></MatchHistory>
+			<ChessMatchHistory></ChessMatchHistory>
 			<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
 		</div>
 	</div>
@@ -25,10 +25,12 @@ import { mapGetters, mapMutations } from 'vuex'
 import Tab from './components/Tab'
 import RankingList from './components/RankingList'
 import MatchHistory from './components/MatchHistory'
+import ChessMatchHistory from './components/ChessMatchHistory'
 import MatchupTable from './components/MatchupTable'
 import TimelineChart from './components/TimelineChart'
 import AddPlayerForm from './components/AddPlayerForm'
 import AddGameForm from './components/AddGameForm'
+import AddChessGameForm from './components/AddChessGameForm'
 import PopupContainer from './components/PopupContainer'
 
 export default {
@@ -74,17 +76,19 @@ export default {
 			this.setActivePopup(AddPlayerForm)
 		},
 		showAddGameForm () {
-			this.setActivePopup(AddGameForm)
+			this.setActivePopup(AddChessGameForm)
 		},
 		...mapMutations(['setActivePopup'])
 	},
 	components: {
 		RankingList,
 		MatchHistory,
+		ChessMatchHistory,
 		MatchupTable,
 		TimelineChart,
 		AddPlayerForm,
 		AddGameForm,
+		AddChessGameForm,
 		PopupContainer,
 		Tab
 	}

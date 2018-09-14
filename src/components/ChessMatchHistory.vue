@@ -5,14 +5,14 @@
 			<li v-if="offset > 0" @click="offset--" class="navigateListButton">Previous</li>
 			<li v-for="match in matches" @click="openOptions(match)">
 				<span class="new-match-history">
-					<div class="winnerContainer">
-						<div class="winners">
-							<div v-for="winner in match.winners">{{ winner.key }} ({{ transformGain(winner.gain) }})</div>
-						</div>
+					<div class="whiteContainer">
+						<span v-bind:class="match.winner === 'black' ? 'winner' : 'loser'">
+							<div>{{ (match.white.key) }} ({{ transformGain(match.white.gain, match.winner === 'white') }})</div>
+						</span>
 					</div>
-					<div class="loserContainer">
-						<span class="losers">
-							<div v-for="loser in match.losers">{{ loser.key }} ({{ transformLoss(loser.loss) }})</div>
+					<div class="blackContainer">
+						<span v-bind:class="match.winner === 'black' ? 'winner' : 'loser'">
+							<div>{{ (match.black.key) }} ({{ transformGain(match.black.loss, match.winner === 'black') }})</div>
 						</span>
 					</div>
 					<div class="result">{{ getResult(match) }}</div>
@@ -26,11 +26,11 @@
 
 <script>
 import _ from 'lodash'
-import RemoveGamePopup from './RemoveGamePopup'
+import RemoveChessGamePopup from './RemoveChessGamePopup'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
-	name: 'match-history',
+	name: 'chess-match-history',
 	data: function() {
 		return {
 			offset: 0
@@ -48,16 +48,6 @@ export default {
 		}
 	},
 	methods: {
-		capitalize (string) {
-			return string && string.replace(/\b\w/g, function(l){ return l.toUpperCase() });
-		},
-		formatDelta (string) {
-			let int = parseInt(string)
-			if(int >= 0)
-				return "+" + int
-			else
-				return int
-		},
 		formatDate (timestamp) {
 			let monthNames = ["January", "February", "March", "April", "May", "June",
 				"July", "August", "September", "October", "November", "December"
@@ -83,22 +73,24 @@ export default {
 			}
 		},
 		getResult (match) {
-			let diff = parseInt(match.difference)
-			return "5 - " + (5 - diff)
+			if(match.winner === 'white')
+				return '1 - 0'
+
+			if(match.winner === 'black')
+				return '0 - 1'
+
+			return '0.5 - 0.5'
 		},
-		getLoserScore (match) {
-			let diff = parseInt(match.difference)
-			return 5 - diff
-		},
-		transformGain (result) {
-			return "+" + Math.round(result)
-		},
-		transformLoss (result) {
-			return "-" + Math.round(result)
+		transformGain (result, winner) {
+			const change = Math.round(result)
+			if(winner)
+				return "+" + Math.abs(change)
+			else
+				return "-" + Math.abs(change)
 		},
 		openOptions (match) {
 			this.setRemoveMatchObject(match)
-			this.setActivePopup(RemoveGamePopup)
+			this.setActivePopup(RemoveChessGamePopup)
 		},
 		...mapMutations(['setRemoveMatchObject', 'setActivePopup'])
 	}
@@ -130,11 +122,19 @@ li:nth-child(even) {
 	background: #e9e9e9;
 }
 
-.loserContainer, .winnerContainer {
+.winner {
+	color: green;
 }
 
-.winnerContainer, .old-match-history .winners{
-	color: green;
+.loser {
+	color: #8C271E;
+}
+
+.whiteContainer, .blackContainer {
+	text-transform: capitalize;
+}
+
+.whiteContainer {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
@@ -157,8 +157,10 @@ li:nth-child(even) {
 	display: inline-block;
 }
 
-.loserContainer, .old-match-history .losers {
-	color: #8C271E;
+.blackContainer {
+	padding-left: 5px;
+	height: 100%;
+	line-height: 90px;
 	right: 10px;
 	position: absolute;
 	top: 50%;

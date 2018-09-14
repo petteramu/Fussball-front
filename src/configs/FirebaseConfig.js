@@ -1,10 +1,10 @@
 var config = {
-    apiKey: "AIzaSyAYP19DKZMnwtg45z3_nUpN3E_qH9P1R-A",
-    authDomain: "fussball-test.firebaseapp.com",
-    databaseURL: "https://fussball-test.firebaseio.com",
-    projectId: "fussball-test",
-    storageBucket: "fussball-test.appspot.com",
-    messagingSenderId: "955533570900"
+	apiKey: "AIzaSyD__PGVumQE6My59lzKmlrgAkz0Lv-NLqI",
+	authDomain: "chess-prod.firebaseapp.com",
+	databaseURL: "https://chess-prod.firebaseio.com",
+	projectId: "chess-prod",
+	storageBucket: "chess-prod.appspot.com",
+	messagingSenderId: "91768663163"
 }
 
 export default config
