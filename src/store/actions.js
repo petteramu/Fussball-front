@@ -12,8 +12,8 @@ export default {
 		firebase.addPlayer(name)
 	},
 
-	addMatch ({ commit, state }, match) {
-		firebase.submitGame(match)
+	addMatch ({ commit, state }, { match, callback }) {
+		firebase.submitGame(match, callback)
 	},
 
 	removeMatch ({ commit, state}, match) {

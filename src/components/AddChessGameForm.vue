@@ -77,9 +77,11 @@ export default {
 				return
 			}
 			this.addMatch({
-				winner: this.winner,
-				white: this.white,
-				black: this.black
+				match: {
+					winner: this.winner,
+					white: this.white,
+					black: this.black
+				}
 			})
 			this.resetActivePopup()
 		},

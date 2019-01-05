@@ -6,7 +6,7 @@
 			<li v-for="match in matches" @click="openOptions(match)">
 				<span class="new-match-history">
 					<div class="whiteContainer">
-						<span v-bind:class="match.winner === 'black' ? 'winner' : 'loser'">
+						<span v-bind:class="match.winner === 'white' ? 'winner' : 'loser'">
 							<div>{{ (match.white.key) }} ({{ transformGain(match.white.gain, match.winner === 'white') }})</div>
 						</span>
 					</div>
@@ -97,9 +97,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
-ol {
+#matchHistory ol {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
@@ -107,7 +107,7 @@ ol {
 	border: 1px solid #e9e9e9;
 }
 
-li {
+#matchHistory li, .match {
 	list-style: none;
 	margin: 0;
 	padding: 5px;
@@ -118,7 +118,7 @@ li {
 	position: relative;
 }
 
-li:nth-child(even) {
+#matchHistory li:nth-child(even), .match:nth-child(even) {
 	background: #e9e9e9;
 }
 
@@ -208,14 +208,14 @@ li:nth-child(even) {
   width: 100%;
 }
 
-.navigateListButton {
-	height: 20px;
+#matchHistory .navigateListButton {
+	height: 30px;
 	padding: 5px;
 	line-height: 20px;
 	text-align: center;
 }
 
-.navigateListButton:hover {
+#matchHistory .navigateListButton:hover {
 	background: #4E8098;
 	color: white;
 }

@@ -1,52 +1,36 @@
 <template>
 	<div
-		class="popupContainer"
-		v-if="activePopup">
+		class="popupWrapper">
 		<div
 			class="backgroundFade"
 			v-on:click="hide"></div>
-		<component
-			class="widget"
-			@event="onEvent"
-			:data="activePopup.data"
-			:is="activePopup.component"></component>
+
+		<div class="slotContainer">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-
 export default {
-	name: 'PopupContainer',
-	data: function() {
-		return {
-			showPopup: false
-		}
-	},
-	computed: {
-		...mapState(['activePopup'])
-	},
+	name: 'PopupWrapper',
 	methods: {
 		hide () {
-			this.setActivePopup(undefined)
-		},
-		onEvent (data) {
-			this.$emit(data)
-		},
-		...mapMutations(['setActivePopup'])
+			this.$emit('hide')
+		}
 	}
 }
 </script>
 
 <style scoped>
-.popupContainer {
+.popupWrapper {
 	position: absolute;
 	width: 100%;
 	height: 100%;
 	top: 0;
 	left: 0;
 }
-.popupContainer > .widget {
+.slotContainer {
 	z-index: 100;
 	position: absolute;
     left: 50%;

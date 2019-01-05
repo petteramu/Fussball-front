@@ -1,5 +1,6 @@
 
 function createTeammateData (matches) {
+	return []
 	let players  = getPlayerArray(matches)
 	let matchupTable = []
 
@@ -26,6 +27,7 @@ function createTeammateData (matches) {
 	return matchupTable
 }
 function createOpponentData (matches) {
+	return []
 	let players  = getPlayerArray(matches)
 	let matchupTable = []
 

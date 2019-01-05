@@ -66,10 +66,17 @@ export default {
 		const request = new XMLHttpRequest()
 
 		if(typeof callback === 'function')
-			request.addEventListener("load", onSuccess)
+			request.onreadystatechange = () => {
+				if(request.readyState === 4)
+					callback(null, JSON.parse(request.response))
+			}
+
+		if(typeof callback === 'function')
+			request.addEventListener("error", callback)
 
 		request.open('GET', LambdaConfig.url + '?' + queryParams)
-		request.setRequestHeader('X-Api-Key', LambdaConfig.apiKey)
+		if(LambdaConfig.apiKey)
+			request.setRequestHeader('X-Api-Key', LambdaConfig.apiKey)
 		request.send()
 	},
 

@@ -5,17 +5,13 @@
 				<span class="position">Pos</span>
 				<span class="rank">MMR</span>
 				<span class="name headerName">Name</span>
-				<span class="winrate">Win %</span>
 				<span class="streak">Streak</span>
-
+				<span class="winrate">Games</span>
 			</li>
 			<li v-for="(player, index) in rankings">
-				<div class="index">{{ index + 1 }}:</div>
-				<span class="mmr">{{ player.mmr }} - </span>
-				<span class="name">{{ capitalize(player.name) }} <span v-html="player.icon"></span></span>
-				<span class="winrate">
-					{{ player.winrate }}%
-				</span>
+				<span class="index">{{ index + 1 }}.</span>
+				<span class="mmr">{{ player.mmr }} </span>
+				<span class="name">{{ player.name }}<span v-html="player.icon"></span></span>
 				<span class="streak" v-if="player.streak">
 					<span v-if="player.streak > 0">
 							&#x1f525; {{player.streak}}
@@ -23,6 +19,9 @@
 					<span v-if="player.streak < 0">
 						&#x1F4C9; {{Math.abs(player.streak)}}
 					</span>
+				</span>
+				<span class="winrate">
+					{{ player.wins || 0 }}/{{ player.remis || 0 }}/{{ player.losses || 0 }}
 				</span>
 			</li>
 		</ol>
@@ -49,20 +48,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.ranking-list {
+	width: 100%;
+}
+
 ol {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	width: 100%;
 	border: 1px solid #e7e7e7;
+	display: table;
 }
 
 li {
 	margin: 0;
-	height: 30px;
 	background: #e9e9e9;
-	line-height: 30px;
+	line-height: 10px;
 	padding: 3px 10px 3px 10px;
+	display: table-row;
 }
 
 li:nth-child(even) {
@@ -70,7 +74,10 @@ li:nth-child(even) {
 }
 
 li > span {
-	margin-right: 10px;
+    white-space: nowrap;
+	display: table-cell;
+    vertical-align: middle;
+    padding: 11px;
 }
 
 a {
@@ -79,6 +86,7 @@ a {
 
 .header {
 	background: lightgray;
+	font-weight: bold;
 }
 
 .index {
@@ -90,7 +98,6 @@ a {
 }
 
 .headerName {
-	position: absolute;
 	padding-left: 8px;
 }
 
@@ -99,20 +106,14 @@ a {
 }
 
 .name {
-	position: relative;
-	left: 5%;
+	text-transform: capitalize;
+	width: 90%;
 }
 
-
-.winrate, .gamesPlayed, .streak {
-	float: right;
+.winrate,, .streak {
 	width: 75px;
 	margin: 0;
-}
-
-.gamesPlayed {
-	text-align: right;
-	margin-right: 15px;
+    font-size: 14px;
 }
 
 </style>

@@ -22,6 +22,9 @@ export default {
 			return {
 				name: key,
 				mmr: mmr,
+				wins: player.wins,
+				losses: player.losses,
+				remis: player.remis,
 				winrate: winrate,
 				streak: player.streak,
 				icon: player.icon

@@ -1,4 +1,5 @@
 function getWeeklyChartData (matches) {
+	return {}
 	let weeks = _.map(matches, function(match) {
 		return getWeekNumber(new Date(match.timestamp));
 	})
@@ -40,6 +41,7 @@ function getWeeklyChartData (matches) {
 	}
 }
 function getDailyChartData (matches) {
+	return {}
 	let dates = _.map(matches, function(match) {
 		return getDateStamp(match.timestamp)
 	})
