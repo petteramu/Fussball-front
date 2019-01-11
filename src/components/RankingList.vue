@@ -11,8 +11,8 @@
 			<li v-for="(player, index) in rankings">
 				<span class="index">{{ index + 1 }}.</span>
 				<span class="mmr">{{ player.mmr }} </span>
-				<span class="name">{{ player.name }}<span v-html="player.icon"></span></span>
-				<span class="streak" v-if="player.streak">
+				<span class="name" @click="$router.push('/user/' + player.name)">{{ player.name }}<span v-html="player.icon"></span></span>
+				<span class="streak">
 					<span v-if="player.streak > 0">
 							&#x1f525; {{player.streak}}
 					</span>
@@ -33,21 +33,12 @@ import { mapGetters } from 'vuex'
 export default {
 	name: 'ranking-list',
 	props: ['data'],
-	data () {
-		return {}
-	},
-	computed: mapGetters(['rankings']),
-	methods: {
-		capitalize (string) {
-			return string && string.replace(/\b\w/g, function(l){ return l.toUpperCase() });
-		}
-	}
+	computed: mapGetters(['rankings'])
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style lang="scss" scoped>
 .ranking-list {
 	width: 100%;
 }
@@ -67,17 +58,21 @@ li {
 	line-height: 10px;
 	padding: 3px 10px 3px 10px;
 	display: table-row;
-}
+	&:nth-child(even) {
+		background: #f5f5f5;
+	}
+	> span {
+	    white-space: nowrap;
+		display: table-cell;
+	    vertical-align: middle;
+	    padding: 11px;
+	}
 
-li:nth-child(even) {
-	background: #f5f5f5;
-}
-
-li > span {
-    white-space: nowrap;
-	display: table-cell;
-    vertical-align: middle;
-    padding: 11px;
+	&:hover {
+		background: #4E8098;
+		color: white;
+		cursor: pointer;
+	}
 }
 
 a {

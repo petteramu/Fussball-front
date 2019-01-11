@@ -5,14 +5,14 @@
 			<div class="ranking-container">
 				<RankingList id="rankingList"></RankingList>
 			</div>
-			<Tab v-bind:data="matchupTableData"></Tab>
 		</div>
 		<div id="rightContainer" class="rightContainer">
 			<div class="menuContainer">
 				<button @click="showAddGameForm()">Submit game</button>
 				<button v-on:click="showAddPlayerForm()">Add player</button>
 			</div>
-			<ChessMatchHistory></ChessMatchHistory>
+			<h2>Latest matches</h2>
+			<ChessMatchHistory :matches="matches" :pagination="true" />
 			<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
 		</div>
 	</div>
@@ -21,7 +21,7 @@
 <script>
 import _ from 'lodash'
 import * as firebase from 'firebase'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 import Tab from './Tab'
 import RankingList from './RankingList'
 import MatchHistory from './MatchHistory'
@@ -69,14 +69,15 @@ export default {
 				]
 			}
 		},
+		...mapState(['matches']),
 		...mapGetters(['versusTableData', 'teammateTableData', 'weeklyChartData', 'dailyChartData'])
 	},
 	methods: {
 		showAddPlayerForm () {
-			this.setActivePopup(AddPlayerForm)
+			this.setActivePopup({ component: AddPlayerForm })
 		},
 		showAddGameForm () {
-			this.setActivePopup(AddChessGameForm)
+			this.setActivePopup({ component: AddChessGameForm })
 		},
 		...mapMutations(['setActivePopup'])
 	},
@@ -95,7 +96,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 body {
 	background-color: #f7f7f7;
 	font-size: 14px;

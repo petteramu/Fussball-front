@@ -1,25 +1,40 @@
 <template>
-	<div id="matchHistory" class="matchHistory">
-		<h2>Latest matches</h2>
+	<div
+		id="matchHistory"
+		class="matchHistory">
 		<ol>
-			<li v-if="offset > 0" @click="offset--" class="navigateListButton">Previous</li>
-			<li v-for="match in matches" @click="openOptions(match)">
+			<li v-if="pagination && offset > 0" @click="offset--" class="navigateListButton">Previous</li>
+			<li v-for="match in page" @click="openOptions(match)">
 				<span class="new-match-history">
 					<div class="whiteContainer">
-						<span v-bind:class="match.winner === 'white' ? 'winner' : 'loser'">
-							<div>{{ (match.white.key) }} ({{ transformGain(match.white.gain, match.winner === 'white') }})</div>
+						<span v-bind:class="getPlayerColor(match, 'white')">
+							<div>{{ (match.white.key) }}
+								<span v-if="match.white.gain !== undefined">
+									(+{{ Math.round(Math.abs(match.white.gain)) }})
+								</span>
+								<span v-if="match.white.loss !== undefined">
+									(-{{ Math.round(Math.abs(match.white.loss)) }})
+								</span>
+							</div>
 						</span>
 					</div>
 					<div class="blackContainer">
-						<span v-bind:class="match.winner === 'black' ? 'winner' : 'loser'">
-							<div>{{ (match.black.key) }} ({{ transformGain(match.black.loss, match.winner === 'black') }})</div>
+						<span v-bind:class="getPlayerColor(match, 'black')">
+							<div>{{ (match.black.key) }}
+								<span v-if="match.black.gain !== undefined">
+									(+{{ Math.round(Math.abs(match.black.gain)) }})
+								</span>
+								<span v-if="match.black.loss !== undefined">
+									(-{{ Math.round(Math.abs(match.black.loss)) }})
+								</span>
+							</div>
 						</span>
 					</div>
 					<div class="result">{{ getResult(match) }}</div>
 					<div class="timestamp">{{ formatDate(match.timestamp) }}</div>
 				</span>
 			</li>
-			<li v-if="totalMatches > offset + 5" @click="offset++" class="navigateListButton">Next</li>
+			<li v-if="pagination && totalMatches > offset + 5" @click="offset++" class="navigateListButton">Next</li>
 		</ol>
 	</div>
 </template>
@@ -31,23 +46,35 @@ import { mapState, mapMutations } from 'vuex'
 
 export default {
 	name: 'chess-match-history',
+	props: ['matches', 'pagination'],
 	data: function() {
 		return {
 			offset: 0
 		}
 	},
 	computed: {
-		matches (state) {
-			let matches = this.$store.state.matches
-			if(_.isArray(matches))
-				return _.clone(matches).reverse().slice(this.offset, this.offset + 5)
+		page (state) {
+			if(_.isArray(this.matches)) {
+				if(this.pagination === true)
+					return _.clone(this.matches).slice(this.offset, this.offset + 5)
+				else
+					return this.matches
+			}
 		},
 		totalMatches (state) {
-			let matches = this.$store.state.matches
-			return matches.length
+			return this.matches.length
 		}
 	},
 	methods: {
+		getPlayerColor (match, color) {
+			if(match.winner === 'remis')
+				return ''
+			if(color === 'white' && match.winner !== undefined)
+				return match.winner === 'white' ? 'winner' : 'loser'
+			if(color === 'black' && match.winner !== undefined)
+				return match.winner === 'black' ? 'winner' : 'loser'
+			return ''
+		},
 		formatDate (timestamp) {
 			let monthNames = ["January", "February", "March", "April", "May", "June",
 				"July", "August", "September", "October", "November", "December"
@@ -58,19 +85,6 @@ export default {
 			if(hh < 10) hh = "0" + hh;
 			if(mm < 10) mm = "0" + mm;
 			return hh + ':' + mm + ' - ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear()
-		},
-		getLatestMatches () {
-			if (_.isArray(this.matches))
-				return this.matches.reverse().slice(0, 10)
-			else {
-				let array = []
-				for (let prop in this.matches) {
-					if(this.matches.hasOwnProperty(prop)) {
-						array[parseInt(prop)] = this.matches[parseInt(prop)]
-					}
-				}
-				return array.reverse().slice(0, 5)
-			}
 		},
 		getResult (match) {
 			if(match.winner === 'white')
@@ -83,14 +97,16 @@ export default {
 		},
 		transformGain (result, winner) {
 			const change = Math.round(result)
-			if(winner)
+			if(change >= 0)
 				return "+" + Math.abs(change)
 			else
 				return "-" + Math.abs(change)
 		},
 		openOptions (match) {
 			this.setRemoveMatchObject(match)
-			this.setActivePopup(RemoveChessGamePopup)
+			this.setActivePopup({
+				component: RemoveChessGamePopup
+			})
 		},
 		...mapMutations(['setRemoveMatchObject', 'setActivePopup'])
 	}
@@ -122,11 +138,11 @@ export default {
 	background: #e9e9e9;
 }
 
-.winner {
+.matchHistory .winner {
 	color: green;
 }
 
-.loser {
+.matchHistory .loser {
 	color: #8C271E;
 }
 

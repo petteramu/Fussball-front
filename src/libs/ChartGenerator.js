@@ -1,5 +1,4 @@
 function getWeeklyChartData (matches) {
-	return {}
 	let weeks = _.map(matches, function(match) {
 		return getWeekNumber(new Date(match.timestamp));
 	})
@@ -8,14 +7,29 @@ function getWeeklyChartData (matches) {
 	let minWeek = weeks[0];
 	let maxWeek = weeks[weeks.length - 1]
 
-	let players = {}
-	for(let match of matches) {
+	let validMatches = _.filter(matches, (match) => {
+		// Ignore matches with outdate structure
+		if(!match.white) return false
+
 		let wn = getWeekNumber(new Date(match.timestamp))
-		if(wn >= minWeek && wn <= maxWeek) {
-			let wnIndex = weeks.indexOf(wn)
-			createChartObject(match.winners[0].key, match.winners[0].preRanking + match.winners[0].gain, match, players, wnIndex, weeks.length)
-			createChartObject(match.losers[0].key, match.losers[0].preRanking - match.losers[0].loss, match, players, wnIndex, weeks.length)
-		}
+		return (wn >= minWeek && wn <= maxWeek)
+	}).reverse()
+
+	let players = {}
+	for(let match of validMatches) {
+		let wn = getWeekNumber(new Date(match.timestamp))
+		let wnIndex = weeks.indexOf(wn)
+
+		// Handle both gains and losses for both colors. Must check for gain and loss since remis are unpredictable in who has which.
+		if(match.white.gain !== undefined)
+			createChartObject(match['white'].key, match['white'].preRanking + match['white'].gain, match, players, wnIndex, weeks.length)
+		else
+			createChartObject(match['white'].key, match['white'].preRanking - match['white'].loss, match, players, wnIndex, weeks.length)
+
+		if(match.black.gain !== undefined)
+			createChartObject(match['black'].key, match['black'].preRanking + match['black'].gain, match, players, wnIndex, weeks.length)
+		else
+			createChartObject(match['black'].key, match['black'].preRanking - match['black'].loss, match, players, wnIndex, weeks.length)
 	}
 
 	// Fill values
@@ -41,22 +55,37 @@ function getWeeklyChartData (matches) {
 	}
 }
 function getDailyChartData (matches) {
-	return {}
 	let dates = _.map(matches, function(match) {
 		return getDateStamp(match.timestamp)
 	})
-	dates = _.uniq(dates)
+
+	dates = _.uniq(dates).reverse()
 	dates = dates.slice(-10)
 	let minDay = dates[0];
 	let maxDay = dates[dates.length - 1]
-	let players = {}
-	for(let match of matches) {
+
+	let validMatches = _.filter(matches, (match) => {
+		// Ignore matches with outdate structure
+		if(!match.white) return false
+
 		let dateStamp = getDateStamp(match.timestamp)
-		if(dateStamp >= minDay && dateStamp <= maxDay) {
-			let dsIndex = dates.indexOf(dateStamp)
-			createChartObject(match.winners[0].key, match.winners[0].preRanking + match.winners[0].gain, match, players, dsIndex, dates.length)
-			createChartObject(match.losers[0].key, match.losers[0].preRanking - match.losers[0].loss, match, players, dsIndex, dates.length)
-		}
+		return (dateStamp >= minDay && dateStamp <= maxDay)
+	}).reverse()
+
+	let players = {}
+	for(let match of validMatches) {
+		let dsIndex = dates.indexOf(getDateStamp(match.timestamp))
+
+		// Handle both gains and losses for both colors. Must check for gain and loss since remis are unpredictable in who has which.
+		if(match.white.gain !== undefined)
+			createChartObject(match['white'].key, match['white'].preRanking + match['white'].gain, match, players, dsIndex, dates.length)
+		else
+			createChartObject(match['white'].key, match['white'].preRanking - Math.abs(match['white'].loss), match, players, dsIndex, dates.length)
+
+		if(match.black.gain !== undefined)
+			createChartObject(match['black'].key, match['black'].preRanking + match['black'].gain, match, players, dsIndex, dates.length)
+		else
+			createChartObject(match['black'].key, match['black'].preRanking - Math.abs(match['black'].loss), match, players, dsIndex, dates.length)
 	}
 
 	let values = []
@@ -76,6 +105,7 @@ function getDailyChartData (matches) {
 		xLabel: 'Date'
 	}
 }
+
 function getDateStamp (stamp) {
 	let date = new Date(stamp)
 	date.setHours(0)
@@ -84,6 +114,7 @@ function getDateStamp (stamp) {
 	date.setMilliseconds(0)
 	return date.getTime()
 }
+
 function fillInEmpty (array) {
 	let index = 0
 	while(index < array.length) {
@@ -94,6 +125,7 @@ function fillInEmpty (array) {
 	}
 	return array
 }
+
 function createChartObject (player, elo, match, playersObject, valueIndex, max) {
 	if(playersObject[player] == undefined) {
 		playersObject[player] = {
@@ -103,6 +135,7 @@ function createChartObject (player, elo, match, playersObject, valueIndex, max) 
 	}
 	playersObject[player].values[valueIndex] = elo
 }
+
 /* For a given date, get the ISO week number
  *
  * Based on information at:

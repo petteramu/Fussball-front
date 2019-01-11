@@ -9,7 +9,7 @@
 			<li v-for="(object, index) in rankings">
 				<span class="index">{{ index + 1 }}:</span>
 				<span class="mmr">{{ object.wins }} </span>
-				<span class="name">{{ capitalize(object.name) }}</span>
+				<span class="name">{{ object.name }}</span>
 			</li>
 		</ol>
 	</div>

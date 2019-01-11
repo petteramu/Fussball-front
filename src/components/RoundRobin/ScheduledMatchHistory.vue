@@ -1,5 +1,7 @@
 <template>
-	<div id="ScheduledMatchHistory">
+	<div
+		id="ScheduledMatchHistory"
+		class="matchHistory">
 		<PopupWrapper
 			@hide="resetPopup"
 			v-if="popupVisible">
@@ -15,10 +17,10 @@
 				<span v-bind:class="getPlayerColor(match, 'white')">
 					<div>{{ (match.white.key) }}
 						<span v-if="match.white.gain !== undefined">
-							({{ transformGain(match.white.gain, match.winner === 'white') }})
+							(+{{ Math.round(Math.abs(match.white.gain)) }})
 						</span>
 						<span v-if="match.white.loss !== undefined">
-							({{ transformGain(match.white.loss, match.winner === 'white') }})
+							(-{{ Math.round(Math.abs(match.white.loss)) }})
 						</span>
 					</div>
 				</span>
@@ -27,10 +29,10 @@
 				<span v-bind:class="getPlayerColor(match, 'black')">
 					<div>{{ (match.black.key) }}
 						<span v-if="match.black.gain !== undefined">
-							({{ transformGain(match.black.gain, match.winner === 'black') }})
+							(+{{ Math.round(Math.abs(match.black.gain)) }})
 						</span>
 						<span v-if="match.black.loss !== undefined">
-							({{ transformGain(match.black.loss, match.winner === 'black') }})
+							(-{{ Math.round(Math.abs(match.black.loss)) }})
 						</span>
 					</div>
 				</span>
@@ -81,13 +83,6 @@ export default {
 			if(hh < 10) hh = "0" + hh;
 			if(mm < 10) mm = "0" + mm;
 			return hh + ':' + mm + ' - ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear()
-		},
-		transformGain (result, winner) {
-			const change = Math.round(result)
-			if(winner)
-				return "+" + Math.abs(change)
-			else
-				return "-" + Math.abs(change)
 		},
 		onOpen (match) {
 			if(match.winner !== undefined) return

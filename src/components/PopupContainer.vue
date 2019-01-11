@@ -7,7 +7,6 @@
 			v-on:click="hide"></div>
 		<component
 			class="widget"
-			@event="onEvent"
 			:data="activePopup.data"
 			:is="activePopup.component"></component>
 	</div>
@@ -18,11 +17,6 @@ import { mapState, mapMutations } from 'vuex'
 
 export default {
 	name: 'PopupContainer',
-	data: function() {
-		return {
-			showPopup: false
-		}
-	},
 	computed: {
 		...mapState(['activePopup'])
 	},
