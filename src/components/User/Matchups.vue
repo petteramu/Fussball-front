@@ -91,7 +91,7 @@ export default {
 		lastFive () {
 			if(!this.matchup || !this.opponent) return
 
-			return _.map(this.matchup.matches.slice(-5), (match) => {
+			return _.map(this.matchup.matches.slice(0, 5).reverse(), (match) => {
 				let opponentColor = (match.white.key === this.opponent) ? 'white' : 'black'
 
 				let winner = 'remis'
@@ -183,7 +183,7 @@ export default {
 		}
 		.symbol {
 			font-size: 32px;
-			text-shadow: 1px 1px 1px black;
+			text-shadow: 0px 0px 5px black;
 		}
 	}
 

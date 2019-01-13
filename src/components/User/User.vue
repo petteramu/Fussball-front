@@ -16,9 +16,11 @@
 				</span>
 
 				<span class="info">
-					<b>Games:</b> {{ userData.wins + userData.losses + userData.remis }}({{ userData.wins }}/{{userData.losses }}/{{userData.remis }})
+					<b>Games:</b> {{ userData.wins || 0 + userData.losses || 0 + userData.remis || 0 }}({{ userData.wins || 0 }}/{{userData.remis || 0 }}/{{userData.losses || 0 }})
 				</span>
+			</div>
 
+			<div class="halfContainer">
 				<h2>Matchups</h2>
 				<div v-for="matchup, key of userMatchups" class="matchup">
 					<Matchups
@@ -26,8 +28,7 @@
 						:opponent="key" />
 				</div>
 			</div>
-
-			<div class="matchContainer">
+			<div class="halfContainer">
 				<h2>Latest matches</h2>
 				<ChessMatchHistory :matches="userMatches" :pagination="true" />
 			</div>
@@ -66,22 +67,23 @@ export default {
 
 <style scoped lang="scss">
 #User {
-	padding: 15px;
 }
 
 h1 {
-	text-transform: uppercase;
+	text-transform: capitalize;
 	font-size: 38px;
-	margin: 0;
+	margin: 5px 0 5px 0;
 }
 
 span {
 	vertical-align: top;
 }
 
-.matchContainer, .infoContainer {
-	padding: 10px;
+.halfContainer {
 	vertical-align: top;
+	&:nth-child(2) {
+		padding-right: 15px;
+	}
 }
 
 .matchup {
@@ -96,7 +98,7 @@ span {
 	and (min-device-width: 1200px)
 	and (-webkit-min-device-pixel-ratio: 1) {
 
-	.matchContainer, .infoContainer {
+	.halfContainer {
 		display: inline-block;
 		width: 50%;
 	}

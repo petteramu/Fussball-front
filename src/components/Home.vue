@@ -1,20 +1,16 @@
 <template>
 	<div id="Home">
-		<PopupContainer></PopupContainer>
 		<div id="leftContainer" class="leftContainer">
 			<div class="ranking-container">
+				<h2>Rankings</h2>
 				<RankingList id="rankingList"></RankingList>
 			</div>
 		</div>
 		<div id="rightContainer" class="rightContainer">
-			<div class="menuContainer">
-				<button @click="showAddGameForm()">Submit game</button>
-				<button v-on:click="showAddPlayerForm()">Add player</button>
-			</div>
 			<h2>Latest matches</h2>
 			<ChessMatchHistory :matches="matches" :pagination="true" />
-			<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
 		</div>
+		<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
 	</div>
 </template>
 
@@ -28,10 +24,6 @@ import MatchHistory from './MatchHistory'
 import ChessMatchHistory from './ChessMatchHistory'
 import MatchupTable from './MatchupTable'
 import TimelineChart from './TimelineChart'
-import AddPlayerForm from './AddPlayerForm'
-import AddGameForm from './AddGameForm'
-import AddChessGameForm from './AddChessGameForm'
-import PopupContainer from './PopupContainer'
 
 export default {
 	name: 'Home',
@@ -72,60 +64,52 @@ export default {
 		...mapState(['matches']),
 		...mapGetters(['versusTableData', 'teammateTableData', 'weeklyChartData', 'dailyChartData'])
 	},
-	methods: {
-		showAddPlayerForm () {
-			this.setActivePopup({ component: AddPlayerForm })
-		},
-		showAddGameForm () {
-			this.setActivePopup({ component: AddChessGameForm })
-		},
-		...mapMutations(['setActivePopup'])
-	},
 	components: {
 		RankingList,
 		MatchHistory,
 		ChessMatchHistory,
 		MatchupTable,
 		TimelineChart,
-		AddPlayerForm,
-		AddGameForm,
-		AddChessGameForm,
-		PopupContainer,
 		Tab
 	}
 }
 </script>
 
 <style lang="scss">
-body {
-	background-color: #f7f7f7;
-	font-size: 14px;
+
+h2 {
+	margin: 10px 0 15px 0;
 }
+
 #Home {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	color: #2c3e50;
 	margin-bottom: 15px;
-}
-
-.leftContainer {
-	text-align: right;
 }
 
 .rightContainer, .leftContainer{
 	display: block;
 	vertical-align: top;
-	padding: 15px;
 	height: 100%;
 	width: 100%;
 }
-.leftContainer > * {
-	text-align: left;
+
+.leftContainer {
+	text-align: right;
+	padding-right: 15px;
+
+	> * {
+		text-align: left;
+	}
+
+	> div:not(:first-child) {
+		border-top: 2px solid #e7e7e7;
+		margin-top: 15px;
+	}
 }
 
-.leftContainer > div:not(:first-child) {
-	border-top: 2px solid #e7e7e7;
-	margin-top: 15px;
+.rightContainer {
+	margin-top: 30px;
 }
 
 .ranking-container {
@@ -136,13 +120,15 @@ button, input[type='submit'], select {
 	height: 30px;
 	padding: 5px;
 	font-size: 14px;
-	border: 1px solid #a9a9a9;
-	background: #fff;
+	border: none;
+	border-radius: 3px;
+	background: $primaryDarkBlue;
+	color: white;
 	cursor: pointer;
 }
 
 button:hover, input[type='submit']:hover {
-	background: #efefef;
+	background: $primaryHoverColor;
 }
 
 input[type='number'] {
@@ -161,6 +147,7 @@ input[type='number'] {
 	.leftContainer, .rightContainer {
 		display: inline-block;
 		width: 50%;
+		margin-top: 0;
 	}
 }
 </style>

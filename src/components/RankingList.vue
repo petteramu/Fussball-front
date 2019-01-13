@@ -6,9 +6,13 @@
 				<span class="rank">MMR</span>
 				<span class="name headerName">Name</span>
 				<span class="streak">Streak</span>
-				<span class="winrate">Games</span>
+				<span class="winrate">W</span>
+				<span class="winrate">R</span>
+				<span class="winrate">L</span>
 			</li>
-			<li v-for="(player, index) in rankings">
+			<li
+				class="playerRow"
+				v-for="(player, index) in rankings">
 				<span class="index">{{ index + 1 }}.</span>
 				<span class="mmr">{{ player.mmr }} </span>
 				<span class="name" @click="$router.push('/user/' + player.name)">{{ player.name }}<span v-html="player.icon"></span></span>
@@ -21,7 +25,13 @@
 					</span>
 				</span>
 				<span class="winrate">
-					{{ player.wins || 0 }}/{{ player.remis || 0 }}/{{ player.losses || 0 }}
+					{{ player.wins || 0 }}
+				</span>
+				<span class="winrate">
+					{{ player.remis || 0 }}
+				</span>
+				<span class="winrate">
+					{{ player.losses || 0 }}
 				</span>
 			</li>
 		</ol>
@@ -48,39 +58,46 @@ ol {
 	padding: 0;
 	margin: 0;
 	width: 100%;
-	border: 1px solid #e7e7e7;
+	border: 1px solid $midGray;
 	display: table;
 }
 
 li {
 	margin: 0;
-	background: #e9e9e9;
-	line-height: 10px;
+	background: $lightGray;
+	line-height: 15px;
 	padding: 3px 10px 3px 10px;
 	display: table-row;
-	&:nth-child(even) {
-		background: #f5f5f5;
+
+	&.playerRow:nth-child(odd) {
+		background: $midGray;
 	}
 	> span {
-	    white-space: nowrap;
+		white-space: nowrap;
 		display: table-cell;
-	    vertical-align: middle;
-	    padding: 11px;
+		vertical-align: middle;
+		padding: 11px;
+
+		// Hide ranking position on mobile to save space
+		&:first-child {
+		    display: none;
+		}
 	}
 
-	&:hover {
-		background: #4E8098;
+	&.playerRow:hover {
+		background: $primaryHoverColor;
 		color: white;
 		cursor: pointer;
 	}
 }
 
 a {
-	color: #42b983;
+	color: $primaryHoverColor;
 }
 
 .header {
-	background: lightgray;
+	background: $primaryDarkBlue;
+	color: white;
 	font-weight: bold;
 }
 
@@ -108,7 +125,16 @@ a {
 .winrate,, .streak {
 	width: 75px;
 	margin: 0;
-    font-size: 14px;
+	font-size: 14px;
+}
+
+@media screen 
+	and (min-device-width: 1024px)
+	and (-webkit-min-device-pixel-ratio: 1) {
+
+	li > span:first-child {
+	    display: inline-block;
+	}
 }
 
 </style>

@@ -3,7 +3,7 @@
 		<h2>Submit game</h2>
 		<div class="boxContainer">
 			<span>
-				<h4>White:</h4>
+				<h4>White</h4>
 				<span class="box">
 					<div
 						v-for="player in players"
@@ -15,7 +15,7 @@
 				</span>
 			</span>
 			<span>
-				<h4>Black:</h4>
+				<h4>Black</h4>
 				<span class="box">
 					<div
 						v-for="player in players"
@@ -106,7 +106,7 @@ export default {
 	}
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 form select, form input {
 	margin: 5px;
 }
@@ -127,18 +127,21 @@ h2 {
 	border: 1px solid #e7e7e7;
 	padding: 5px;
 	vertical-align: top;
-}
-
-.boxContainer > span:first-child {
-	margin-right: 15px;
+	> span:first-child {
+		margin-right: 15px;
+	}
 }
 
 .playerElement {
-	padding: 5px 5px 5px 15px;
+	padding: 8px 5px 8px 15px;
 	text-transform: capitalize;
-}
-.playerElement:nth-child(even) {
-	background:	#e9e9e9;
+	&:nth-child(even) {
+		background:	$midGray;
+	}
+
+	&:hover {
+		cursor: pointer;
+	}
 }
 
 .difference {
@@ -149,6 +152,10 @@ h2 {
 	min-width: 25px;
 	text-align: center;
 	border-radius: 5px;
+
+	&:hover {
+		cursor: pointer;
+	}
 }
 
 .active {

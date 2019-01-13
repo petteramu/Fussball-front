@@ -6,7 +6,10 @@
 				<span class="rank">Wins</span>
 				<span class="name headerName">Name</span>
 			</li>
-			<li v-for="(object, index) in rankings">
+			<li
+				class="playerRow"
+				v-for="(object, index) in rankings"
+				@click="$router.push('/user/' + object.name)">
 				<span class="index">{{ index + 1 }}:</span>
 				<span class="mmr">{{ object.wins }} </span>
 				<span class="name">{{ object.name }}</span>

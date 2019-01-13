@@ -3,8 +3,15 @@
 		id="matchHistory"
 		class="matchHistory">
 		<ol>
-			<li v-if="pagination && offset > 0" @click="offset--" class="navigateListButton">Previous</li>
-			<li v-for="match in page" @click="openOptions(match)">
+			<li
+				v-if="pagination"
+				@click="previousPage()"
+				class="navigateListButton"
+				:class="{ disabled: offset == 0 }">Previous</li>
+			<li
+				class="match"
+				v-for="match in page"
+				@click="openOptions(match)">
 				<span class="new-match-history">
 					<div class="whiteContainer">
 						<span v-bind:class="getPlayerColor(match, 'white')">
@@ -34,7 +41,11 @@
 					<div class="timestamp">{{ formatDate(match.timestamp) }}</div>
 				</span>
 			</li>
-			<li v-if="pagination && totalMatches > offset + 5" @click="offset++" class="navigateListButton">Next</li>
+			<li
+				v-if="pagination"
+				@click="nextPage()"
+				class="navigateListButton"
+				:class="{ disabled: offset >= totalMatches - 5 }">Next</li>
 		</ol>
 	</div>
 </template>
@@ -108,131 +119,125 @@ export default {
 				component: RemoveChessGamePopup
 			})
 		},
+		previousPage () {
+			this.offset = Math.max(this.offset - 5, 0)
+		},
+		nextPage () {
+			this.offset = Math.min(this.offset + 5, this.totalMatches - 5)
+		},
 		...mapMutations(['setRemoveMatchObject', 'setActivePopup'])
 	}
 }
 </script>
 
-<style>
+<style lang="scss">
 
-#matchHistory ol {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	width: 100%;
-	border: 1px solid #e9e9e9;
+#matchHistory {
+	ol {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		border: 1px solid $midGray;
+	}
+
+	.navigateListButton {
+		height: 38px;
+		padding: 5px;
+		line-height: 30px;
+		text-align: center;
+		background: $midGray;
+		font-weight: bold;
+		&:hover {
+			cursor: pointer;
+			background: #4E8098;
+			color: white;
+		}
+
+		&.disabled {
+			&:hover {
+				cursor: pointer;
+				background: $midGray;
+				color: black;
+			}
+		}
+	}
 }
 
-#matchHistory li, .match {
+.match {
 	list-style: none;
 	margin: 0;
 	padding: 5px;
-	background: #f5f5f5;
+	background: $lightGray;
 	line-height: 30px;
-	padding: 3px 10px 3px 10px;
+	padding: 3px 30px 3px 30px;
 	height: 80px;
 	position: relative;
+
+	&:nth-child(odd) {
+		background: $midGray;
+	}
+
+	.whiteContainer, .blackContainer {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		line-height: 15px;
+		text-transform: capitalize;
+		max-width: 30%;
+	}
+
+	.whiteContainer {
+		width: 50%;
+	}
+
+	.blackContainer {
+		padding-left: 5px;
+		right: 30px;
+	}
+
+	.winner {
+		color: green;
+	}
+
+	.loser {
+		color: #8C271E;
+	}
+
+	.timestamp {
+		text-align: center;
+		position: absolute;
+		left: inherit;
+		width: 100%;
+		bottom: 0;
+		font-size: 10px;
+		margin-left: -30px;
+	}
+
+	.result {
+		font-family: 'Arial Black', Arial, Helvetica, sans-serif;
+		font-size: 25px;
+		position: absolute;
+		top: 50%;
+		left: inherit;
+		margin-left: -30px;
+		text-align: center;
+		transform: translateY(-50%);
+		width: 100%;
+	}
 }
 
-#matchHistory li:nth-child(even), .match:nth-child(even) {
-	background: #e9e9e9;
-}
+@media screen
+	and (max-device-width: 1024px)
+	and (-webkit-min-device-pixel-ratio: 1) {
 
-.matchHistory .winner {
-	color: green;
-}
+	.match {
+		.blackContainer {
+			right: 15px;
+		}
+		.whiteContainer {
 
-.matchHistory .loser {
-	color: #8C271E;
-}
-
-.whiteContainer, .blackContainer {
-	text-transform: capitalize;
-}
-
-.whiteContainer {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 50%;
-}
-
-.winnerResult {
-	text-align: center;
-	color: black;
-	display: inline-block;
-	font-size: 24px;
-	font-weight: bold;
-	height: 60px;
-	line-height: 60px;
-	position: relative;
-	top: -11px;
-}
-
-.new-match-history .winners {
-	display: inline-block;
-}
-
-.blackContainer {
-	padding-left: 5px;
-	height: 100%;
-	line-height: 90px;
-	right: 10px;
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-}
-
-.losers div {
-	text-align: right;
-}
-
-.new-match-history .losers {
-	display: inline-block;
-}
-
-.loserResult {
-	display: inline-block;
-	line-height: 60px;
-	height: 60px;
-	position: relative;
-	top: -11px;
-	color: black;
-	font-weight: bold;
-	text-align: center;
-	font-size: 24px;
-}
-
-.timestamp {
-	text-align: center;
-	position: absolute;
-	left: inherit;
-	width: 100%;
-	bottom: 0;
-	font-size: 12px
-}
-
-.result {
-  font-family: 'Arial Black', Arial, Helvetica, sans-serif;
-  font-size: 25px;
-  position: absolute;
-  top: 50%;
-  left: inherit;
-  margin: auto;
-  text-align: center;
-  transform: translateY(-50%);
-  width: 100%;
-}
-
-#matchHistory .navigateListButton {
-	height: 30px;
-	padding: 5px;
-	line-height: 20px;
-	text-align: center;
-}
-
-#matchHistory .navigateListButton:hover {
-	background: #4E8098;
-	color: white;
+		}
+	}
 }
 </style>
