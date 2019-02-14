@@ -90,8 +90,9 @@ footer {
 	bottom: 0;
 	padding: 0 15px 0 15px;
 	height: 30px;
+	line-height: 30px;
 	color: $darkGray;
-		font-size: 12px;
+	font-size: 12px;
 }
 
 @media screen 
