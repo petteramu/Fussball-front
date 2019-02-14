@@ -63,9 +63,11 @@ export default {
 		return state.players[name]
 	},
 
-	getUserMatches: (state) => (name) => {
+	getUserMatches: (state) => (name, opponent) => {
 		return _.filter(state.matches, (match) => {
-			return match.white != undefined && (match.white.key === name || match.black.key === name)
+			return match.white != undefined
+				&& (match.white.key === name || match.black.key === name)
+				&& (!opponent || match.black.key === opponent || match.white.key === opponent)
 		})
 	},
 

@@ -16,7 +16,7 @@
 				</span>
 
 				<span class="info">
-					<b>Games:</b> {{ userData.wins || 0 + userData.losses || 0 + userData.remis || 0 }}({{ userData.wins || 0 }}/{{userData.remis || 0 }}/{{userData.losses || 0 }})
+					<b>Games:</b> {{ (userData.wins || 0) + (userData.losses || 0) + (userData.remis || 0) }}({{ userData.wins || 0 }}/{{userData.remis || 0 }}/{{userData.losses || 0 }})
 				</span>
 			</div>
 
@@ -30,6 +30,10 @@
 			</div>
 			<div class="halfContainer">
 				<h2>Latest matches</h2>
+				<select v-model="matchFilter">
+					<option selected value="">All</option>
+					<option v-for="matchup, key of userMatchups">{{ key }}</option>
+				</select>
 				<ChessMatchHistory :matches="userMatches" :pagination="true" />
 			</div>
 		</span>
@@ -42,6 +46,11 @@ import ChessMatchHistory from '../ChessMatchHistory'
 import Matchups from './Matchups'
 export default {
 	name: 'User',
+	data () {
+		return {
+			matchFilter: undefined
+		}
+	},
 	computed: {
 		username () {
 			return this.$route.params.name
@@ -50,7 +59,7 @@ export default {
 			return this.getUser(this.username)
 		},
 		userMatches () {
-			return this.getUserMatches(this.username)
+			return this.getUserMatches(this.username, this.matchFilter)
 		},
 		userMatchups () {
 			return this.getUserMatchups(this.username)
@@ -81,6 +90,7 @@ span {
 
 .halfContainer {
 	vertical-align: top;
+	position: relative;
 	&:nth-child(2) {
 		padding-right: 15px;
 	}
@@ -91,6 +101,20 @@ span {
 	background: #e5e5e5;
 	&:nth-child(even) {
 		background: #f5f5f5;
+	}
+}
+
+select, option {
+}
+
+select {
+	position: absolute;
+	right: 0;
+	top: 5px;
+	text-transform: capitalize;
+
+	option {
+		text-transform: capitalize;
 	}
 }
 

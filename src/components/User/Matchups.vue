@@ -63,16 +63,6 @@
 						:class="{ white: match.color === 'W', winner: match.winner === true, loser: match.winner === false}">&#9818;</span>
 				</span>
 			</div>
-			<button v-if="!showMatches" @click="showMatches = !showMatches">Show matches</button>
-			<button v-if="showMatches" @click="showMatches = !showMatches">Hide matches</button>
-		</div>
-
-		<div
-			class="matchContainer"
-			:class="{ visible: showMatches }">
-			<div class="inner">
-				<ChessMatchHistory :matches="matchup.matches" />
-			</div>
 		</div>
 	</div>
 </template>
@@ -82,11 +72,6 @@ import ChessMatchHistory from '../ChessMatchHistory'
 export default {
 	name: 'Matchups',
 	props: ['matchup', 'opponent'],
-	data () {
-		return {
-			showMatches: false
-		}
-	},
 	methods: {
 		lastFive () {
 			if(!this.matchup || !this.opponent) return
