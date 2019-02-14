@@ -14,12 +14,7 @@ export default {
 			if(player.wins != null && player.losses != null)
 				total = player.wins + player.losses
 
-			let weekAgo = new Date()
-			weekAgo.setDate(weekAgo.getDate() - 14)
-			if (player.lastUpdated < weekAgo || total < 3)
-				mmr = '-'
-			else
-				mmr = Math.floor(state.players[key].ranking)
+			mmr = Math.floor(state.players[key].ranking)
 
 			if(total > 0)
 				winrate = Math.floor((player.wins * 100) / (player.wins + player.losses))
@@ -27,6 +22,9 @@ export default {
 			return {
 				name: key,
 				mmr: mmr,
+				wins: player.wins,
+				losses: player.losses,
+				remis: player.remis,
 				winrate: winrate,
 				streak: player.streak,
 				icon: player.icon
@@ -58,5 +56,64 @@ export default {
 
 	dailyChartData: (state) => {
 		return getDailyChartData(state.matches)
+	},
+
+	getUser: (state) => (name) => {
+		if(!state.players) return
+		return state.players[name]
+	},
+
+	getUserMatches: (state) => (name, opponent) => {
+		return _.filter(state.matches, (match) => {
+			return match.white != undefined
+				&& (match.white.key === name || match.black.key === name)
+				&& (!opponent || match.black.key === opponent || match.white.key === opponent)
+		})
+	},
+
+	getUserMatchups: (state, getters) => (name) => {
+		let matches = getters.getUserMatches(name)
+		let opponents = {}
+
+		matches.forEach((match, index) => {
+			// Ignore legacy matches. They do not have the "white" property, only winner and loser
+			if(!match.white) return
+			let opponentColor = (match.white.key === name) ? 'black' : 'white'
+			let opponent = match[opponentColor].key
+
+			if(opponents[opponent] == undefined)
+				opponents[opponent] = {
+					opponent: getters.getUser(opponent),
+					matches: [match],
+					wins: (match.winner !== opponentColor && match.winner !== 'remis') ? 1 : 0,
+					whiteWins: (match.winner !== opponentColor && match.winner !== 'remis' && match.winner === 'white') ? 1 : 0,
+					blackWins: (match.winner !== opponentColor && match.winner !== 'remis' && match.winner === 'black') ? 1 : 0,
+					
+					remis: (match.winner === 'remis') ? 1 : 0,
+					whiteRemis: (match.winner === 'remis' && opponentColor === 'black') ? 1 : 0,
+					blackRemis: (match.winner === 'remis' && opponentColor === 'white') ? 1 : 0,
+					
+					losses: (match.winner === opponentColor) ? 1 : 0,
+					whiteLosses: (match.winner === opponentColor && match.winner === 'black') ? 1 : 0,
+					blackLosses: (match.winner === opponentColor && match.winner === 'white') ? 1 : 0,
+				}
+			else {
+				opponents[opponent].matches.push(match)
+
+				opponents[opponent].wins += (match.winner !== opponentColor && match.winner !== 'remis') ? 1 : 0,
+				opponents[opponent].whiteWins += (match.winner !== opponentColor && match.winner !== 'remis' && opponentColor === 'black') ? 1 : 0,
+				opponents[opponent].blackWins += (match.winner !== opponentColor && match.winner !== 'remis' && opponentColor === 'white') ? 1 : 0,
+				
+				opponents[opponent].remis += (match.winner === 'remis') ? 1 : 0,
+				opponents[opponent].whiteRemis += (match.winner === 'remis' && opponentColor === 'black') ? 1 : 0,
+				opponents[opponent].blackRemis += (match.winner === 'remis' && opponentColor === 'white') ? 1 : 0,
+				
+				opponents[opponent].losses += (match.winner === opponentColor) ? 1 : 0,
+				opponents[opponent].whiteLosses += (match.winner === opponentColor && opponentColor === 'black') ? 1 : 0,
+				opponents[opponent].blackLosses += (match.winner === opponentColor && opponentColor === 'white') ? 1 : 0
+			}
+		})
+
+		return opponents
 	}
 }

@@ -7,12 +7,12 @@
 				<span class="new-match-history">
 					<div class="winnerContainer">
 						<div class="winners">
-							<div v-for="winner in match.winners">{{ capitalize(winner.key) }} ({{ transformGain(winner.gain) }})</div>
+							<div v-for="winner in match.winners">{{ winner.key }} ({{ transformGain(winner.gain) }})</div>
 						</div>
 					</div>
 					<div class="loserContainer">
 						<span class="losers">
-							<div v-for="loser in match.losers">{{ capitalize(loser.key) }} ({{ transformLoss(loser.loss) }})</div>
+							<div v-for="loser in match.losers">{{ loser.key }} ({{ transformLoss(loser.loss) }})</div>
 						</span>
 					</div>
 					<div class="result">{{ getResult(match) }}</div>
@@ -128,6 +128,9 @@ li {
 
 li:nth-child(even) {
 	background: #e9e9e9;
+}
+
+.loserContainer, .winnerContainer {
 }
 
 .winnerContainer, .old-match-history .winners{

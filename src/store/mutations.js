@@ -5,6 +5,9 @@ export default {
 	updatePlayers (state, payload) {
 		state.players = payload
 	},
+	// Accepts a state and payload object
+	// payload should be of structure:
+	// { data: <Any>, component: <Component> }
 	setActivePopup(state, payload) {
 		state.activePopup = payload
 	},

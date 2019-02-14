@@ -5,24 +5,33 @@
 				<span class="position">Pos</span>
 				<span class="rank">MMR</span>
 				<span class="name headerName">Name</span>
-				<span class="winrate">Win %</span>
 				<span class="streak">Streak</span>
-
+				<span class="winrate">W</span>
+				<span class="winrate">R</span>
+				<span class="winrate">L</span>
 			</li>
-			<li v-for="(player, index) in rankings">
-				<div class="index">{{ index + 1 }}:</div>
-				<span class="mmr">{{ player.mmr }} - </span>
-				<span class="name">{{ capitalize(player.name) }} <span v-html="player.icon"></span></span>
-				<span class="winrate">
-					{{ player.winrate }}%
-				</span>
-				<span class="streak" v-if="player.streak">
+			<li
+				class="playerRow"
+				v-for="(player, index) in rankings">
+				<span class="index">{{ index + 1 }}.</span>
+				<span class="mmr">{{ player.mmr }} </span>
+				<span class="name" @click="$router.push('/user/' + player.name)">{{ player.name }}<span v-html="player.icon"></span></span>
+				<span class="streak">
 					<span v-if="player.streak > 0">
 							&#x1f525; {{player.streak}}
 					</span>
 					<span v-if="player.streak < 0">
 						&#x1F4C9; {{Math.abs(player.streak)}}
 					</span>
+				</span>
+				<span class="winrate">
+					{{ player.wins || 0 }}
+				</span>
+				<span class="winrate">
+					{{ player.remis || 0 }}
+				</span>
+				<span class="winrate">
+					{{ player.losses || 0 }}
 				</span>
 			</li>
 		</ol>
@@ -34,51 +43,62 @@ import { mapGetters } from 'vuex'
 export default {
 	name: 'ranking-list',
 	props: ['data'],
-	data () {
-		return {}
-	},
-	computed: mapGetters(['rankings']),
-	methods: {
-		capitalize (string) {
-			return string && string.replace(/\b\w/g, function(l){ return l.toUpperCase() });
-		}
-	}
+	computed: mapGetters(['rankings'])
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+.ranking-list {
+	width: 100%;
+}
 
 ol {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	width: 100%;
-	border: 1px solid #e7e7e7;
+	border: 1px solid $midGray;
+	display: table;
 }
 
 li {
 	margin: 0;
-	height: 30px;
-	background: #e9e9e9;
-	line-height: 30px;
+	background: $lightGray;
+	line-height: 15px;
 	padding: 3px 10px 3px 10px;
-}
+	display: table-row;
 
-li:nth-child(even) {
-	background: #f5f5f5;
-}
+	&.playerRow:nth-child(odd) {
+		background: $midGray;
+	}
+	> span {
+		white-space: nowrap;
+		display: table-cell;
+		vertical-align: middle;
+		padding: 11px;
 
-li > span {
-	margin-right: 10px;
+		// Hide ranking position on mobile to save space
+		&:first-child {
+		    display: none;
+		}
+	}
+
+	&.playerRow:hover {
+		background: $primaryHoverColor;
+		color: white;
+		cursor: pointer;
+	}
 }
 
 a {
-	color: #42b983;
+	color: $primaryHoverColor;
 }
 
 .header {
-	background: lightgray;
+	background: $primaryDarkBlue;
+	color: white;
+	font-weight: bold;
 }
 
 .index {
@@ -90,7 +110,6 @@ a {
 }
 
 .headerName {
-	position: absolute;
 	padding-left: 8px;
 }
 
@@ -99,20 +118,23 @@ a {
 }
 
 .name {
-	position: relative;
-	left: 5%;
+	text-transform: capitalize;
+	width: 90%;
 }
 
-
-.winrate, .gamesPlayed, .streak {
-	float: right;
+.winrate,, .streak {
 	width: 75px;
 	margin: 0;
+	font-size: 14px;
 }
 
-.gamesPlayed {
-	text-align: right;
-	margin-right: 15px;
+@media screen 
+	and (min-device-width: 1024px)
+	and (-webkit-min-device-pixel-ratio: 1) {
+
+	li > span:first-child {
+	    display: inline-block;
+	}
 }
 
 </style>

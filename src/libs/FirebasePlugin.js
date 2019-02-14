@@ -24,7 +24,7 @@ function transformMatches (matches) {
 	for(let key in matches) {
 		let match = matches[key]
 		match.key = key // Hold onto key as we might use it for deletion
-		array.push(match)
+		array.unshift(match) // Reverse order
 	}
 	return array
 }

@@ -1,157 +1,121 @@
 <template>
 	<div id="app">
-		<PopupContainer></PopupContainer>
-		<div id="rightContainer" class="rightContainer">
-			<div class="ranking-container">
-				<RankingList id="rankingList"></RankingList>
-			</div>
-			<Tab v-bind:data="matchupTableData"></Tab>
+		<PopupContainer />
+		<MenuBar />
+		<div class="loader" v-if="!matches || !players">
+			Please wait...
 		</div>
-		<div id="leftContainer" class="leftContainer">
-			<div class="menuContainer">
-				<button @click="showAddGameForm()">Submit game</button>
-				<button v-on:click="showAddPlayerForm()">Add player</button>
-			</div>
-			<MatchHistory></MatchHistory>
-			<Tab id="chartTabs" v-bind:data="chartTabData"></Tab>
+		<div class="site" v-if="matches && players">
+			<router-view></router-view>
 		</div>
+		<footer>
+			Copyright &copy; 2019 Petter Amundsen
+		</footer>
 	</div>
 </template>
 
 <script>
-import _ from 'lodash'
-import * as firebase from 'firebase'
-import { mapGetters, mapMutations } from 'vuex'
-import Tab from './components/Tab'
-import RankingList from './components/RankingList'
-import MatchHistory from './components/MatchHistory'
-import MatchupTable from './components/MatchupTable'
-import TimelineChart from './components/TimelineChart'
-import AddPlayerForm from './components/AddPlayerForm'
-import AddGameForm from './components/AddGameForm'
 import PopupContainer from './components/PopupContainer'
-
+import MenuBar from './components/MenuBar'
+import { mapState } from 'vuex'
 export default {
 	name: 'app',
-	computed: {
-		chartTabData () {
-			return {
-				options: [
-					{
-						name: 'Daily',
-						data: this.dailyChartData,
-						component: TimelineChart
-					},
-					{
-						name: 'Weekly',
-						data: this.weeklyChartData,
-						component: TimelineChart
-					}
-				]
-			}
-		},
-		matchupTableData () {
-			return {
-				title: 'Matchups',
-				options: [
-					{
-						name: 'Versus',
-						data: this.versusTableData,
-						component: MatchupTable
-					},
-					{
-						name: 'Teams',
-						data: this.teammateTableData,
-						component: MatchupTable
-					}
-				]
-			}
-		},
-		...mapGetters(['versusTableData', 'teammateTableData', 'weeklyChartData', 'dailyChartData'])
-	},
 	methods: {
-		showAddPlayerForm () {
-			this.setActivePopup(AddPlayerForm)
-		},
-		showAddGameForm () {
-			this.setActivePopup(AddGameForm)
-		},
-		...mapMutations(['setActivePopup'])
+		goBack () {
+			window.history.length > 1
+				? this.$router.go(-1)
+				: this.$router.push('/')
+		}
+	},
+	computed: {
+		...mapState(['matches', 'players'])
 	},
 	components: {
-		RankingList,
-		MatchHistory,
-		MatchupTable,
-		TimelineChart,
-		AddPlayerForm,
-		AddGameForm,
 		PopupContainer,
-		Tab
+		MenuBar
 	}
 }
 </script>
 
-<style>
+<style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
 body {
 	background-color: #f7f7f7;
-}
-#app {
 	font-family: "Roboto", sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #2c3e50;
-	margin-top: 60px;
-	margin-bottom: 15px;
-}
-
-.leftContainer {
-	position: absolute;
-	right: 0;
-	width: 50%;
-	text-align: right;
-	padding: 15px;
-	top:0;
-	height: 100%;
-}
-
-.rightContainer {
-	position: absolute;
-	left: 0;
-	width: 40%;
-	padding: 15px;
-	top:0;
-	height: 100%;
-}
-
-.leftContainer > * {
-	text-align: left;
-}
-
-.leftContainer > div:not(:first-child) {
-	border-top: 2px solid #e7e7e7;
-	margin-top: 15px;
-}
-
-button, input[type='submit'], select {
-	height: 30px;
-	padding: 5px;
+	letter-spacing: 0.03em;
 	font-size: 14px;
-	border: 1px solid #a9a9a9;
-	background: #fff;
-	cursor: pointer;
+	margin: 0;
+	height: 100%;
 }
 
-button:hover, input[type='submit']:hover {
-	background: #efefef;
+a {
+	position: relative;
 }
 
-input[type='number'] {
-	height: 15px;
-	padding: 5px;
+#app {
+	padding: 0 0 25px 0;
+	position: relative;
+	margin: 0;
+	min-height: 100%;
 }
 
-.menuContainer > * {
-	display: inline-block;
+.loader {
+	position: absolute;
+	margin: 25% 0 0 50%;
+	transform: translateX(-50%);
+}
+
+.site {
+	width: 100%;
+	margin-left: 50%;
+	transform: translateX(-50%);
+	padding: 0 15px 0 15px;
+}
+
+footer {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	padding: 0 15px 0 15px;
+	height: 30px;
+	line-height: 30px;
+	color: $darkGray;
+	font-size: 12px;
+}
+
+@media screen 
+	and (min-device-width: 1024px)
+	and (-webkit-min-device-pixel-ratio: 1) {
+
+	body {
+		font-size: 14px;
+	}
+
+	.site {
+		padding: 0;
+	}
+
+	.site, footer {
+		width: 1024px;
+	}
+
+	footer {
+		margin-left: 50%;
+		transform: translateX(-50%);
+		padding: 0;
+		font-size: 14px;
+	}
 }
 </style>

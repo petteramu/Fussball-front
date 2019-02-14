@@ -3,8 +3,8 @@ import FirebaseConfig from '../configs/FirebaseConfig'
 import LambdaConfig from '../configs/LambdaConfig'
 
 const DEFAULT_KFACTOR = 32
-const PLAYERS_URL = 'season3/players/'
-const MATCHES_URL = 'season3/matches/'
+const PLAYERS_URL = 'players/'
+const MATCHES_URL = 'matches/'
 
 export default {
 	listeners: {},
@@ -27,11 +27,9 @@ export default {
 	submitGame (game, callback) {
 		const query = {
 			action: 'addGame',
-			difference: game.difference,
-			winner1: game.winners[0],
-			winner2: game.winners[1],
-			loser1: game.losers[0],
-			loser2: game.losers[1]
+			winner: game.winner,
+			white: game.white,
+			black: game.black,
 		}
 		this.sendRequest(this.transformToQueryParams(query), callback)
 	},
@@ -68,10 +66,17 @@ export default {
 		const request = new XMLHttpRequest()
 
 		if(typeof callback === 'function')
-			request.addEventListener("load", onSuccess)
+			request.onreadystatechange = () => {
+				if(request.readyState === 4)
+					callback(null, JSON.parse(request.response))
+			}
+
+		if(typeof callback === 'function')
+			request.addEventListener("error", callback)
 
 		request.open('GET', LambdaConfig.url + '?' + queryParams)
-		request.setRequestHeader('X-Api-Key', LambdaConfig.apiKey)
+		if(LambdaConfig.apiKey)
+			request.setRequestHeader('X-Api-Key', LambdaConfig.apiKey)
 		request.send()
 	},
 
