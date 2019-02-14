@@ -1,9 +1,9 @@
 function getWeeklyChartData (matches) {
 	let weeks = _.map(matches, function(match) {
-		return getWeekNumber(new Date(match.timestamp));
+		return getYearAndWeekNumber(new Date(match.timestamp));
 	})
-	weeks = _.uniq(weeks)
-	weeks = weeks.slice(-10)
+	weeks = _.uniq(weeks).reverse()
+	weeks = weeks.slice(0, 10)
 	let minWeek = weeks[0];
 	let maxWeek = weeks[weeks.length - 1]
 
@@ -11,25 +11,25 @@ function getWeeklyChartData (matches) {
 		// Ignore matches with outdate structure
 		if(!match.white) return false
 
-		let wn = getWeekNumber(new Date(match.timestamp))
+		let wn = getYearAndWeekNumber(new Date(match.timestamp))
 		return (wn >= minWeek && wn <= maxWeek)
 	}).reverse()
 
 	let players = {}
 	for(let match of validMatches) {
-		let wn = getWeekNumber(new Date(match.timestamp))
+		let wn = getYearAndWeekNumber(new Date(match.timestamp))
 		let wnIndex = weeks.indexOf(wn)
 
 		// Handle both gains and losses for both colors. Must check for gain and loss since remis are unpredictable in who has which.
 		if(match.white.gain !== undefined)
 			createChartObject(match['white'].key, match['white'].preRanking + match['white'].gain, match, players, wnIndex, weeks.length)
 		else
-			createChartObject(match['white'].key, match['white'].preRanking - match['white'].loss, match, players, wnIndex, weeks.length)
+			createChartObject(match['white'].key, match['white'].preRanking - Math.abs(match['white'].loss), match, players, wnIndex, weeks.length)
 
 		if(match.black.gain !== undefined)
 			createChartObject(match['black'].key, match['black'].preRanking + match['black'].gain, match, players, wnIndex, weeks.length)
 		else
-			createChartObject(match['black'].key, match['black'].preRanking - match['black'].loss, match, players, wnIndex, weeks.length)
+			createChartObject(match['black'].key, match['black'].preRanking - Math.abs(match['black'].loss), match, players, wnIndex, weeks.length)
 	}
 
 	// Fill values
@@ -163,9 +163,16 @@ function getWeekNumber (d) {
     var yearStart = new Date(d.getFullYear(),0,1);
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-    // Return array of year and week number
+
     return weekNo
 }
+
+function getYearAndWeekNumber (d) {
+	let weekNo = getWeekNumber(d)
+	if(weekNo < 10) weekNo = 0 + '' + weekNo
+	return d.getFullYear() + '' + weekNo
+}
+
 function getDateString (d) {
 	let date = doubleNum(d.getUTCDate())
 	let month = doubleNum(d.getUTCMonth())
