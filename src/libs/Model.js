@@ -80,39 +80,10 @@ export default {
 		request.send()
 	},
 
-	getMatchesByPlayer (playerName, matches) {
-		matches = _.filter(matches, function (match) {
-			if (match.winner1 != undefined) {
-				if (match.winner1 == playerName || match.winner2 == playerName || match.loser1 == playerName || match.loser2 == playerName) {
-					return true
-				}
-			}
-			else {
-				if (this._pickArray(match.winners, 'name').indexOf(playerName) > -1 || this._pickArray(match.losers, 'name').indexOf(playerName) > -1)
-					return true
-			}
-		}.bind(this))
-
-		return matches
-	},
-
-	getTotalMatches () {
-		if (this.players != undefined && this.matches != undefined) {
-			for (let playerName in this.players) {
-				let playerMatches = this.getMatchesByPlayer(playerName, this.matches)
-				console.log(playerName, playerMatches.length)
-			}
-		}
-	},
-
 	_pickArray (array, key) {
 		return _.map(array, function(obj) {
 			return obj[key]
 		})
-	},
-
-	getDefaultKFactor () {
-		return DEFAULT_KFACTOR
 	},
 
 	getPlayersURL () {
