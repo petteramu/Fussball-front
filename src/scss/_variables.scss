@@ -4,4 +4,7 @@ $darkGray: #999;
 
 $primaryDarkBlue: #30343F;
 
-$primaryHoverColor: #4E8098;
+$primaryHoverColor: #fb8b24;
+$primaryHoverColorOffset: darken($primaryHoverColor, 7.5%);
+$primaryHoverText: #02111b;
+$secondaryHoverColor: #4E8098;

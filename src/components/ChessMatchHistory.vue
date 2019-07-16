@@ -10,17 +10,21 @@
 				:class="{ disabled: offset == 0 }">Previous</li>
 			<li
 				class="match"
-				v-for="match in page"
+				v-for="(match, index) in page"
+				:key="index"
 				@click="openOptions(match)">
 				<span class="new-match-history">
 					<div class="whiteContainer">
 						<span v-bind:class="getPlayerColor(match, 'white')">
 							<div>{{ (match.white.key) }}
 								<span v-if="match.white.gain !== undefined">
-									(+{{ Math.round(Math.abs(match.white.gain)) }})
+									(<span v-if="match.white.gain >= 0">+</span>{{ Math.round(match.white.gain) }})
 								</span>
 								<span v-if="match.white.loss !== undefined">
-									(-{{ Math.round(Math.abs(match.white.loss)) }})
+									(<span v-if="match.white.loss >= 0">+</span>{{ Math.round(match.white.loss) }})
+								</span>
+								<span v-if="match.white.change !== undefined">
+									(<span v-if="match.white.change >= 0">+</span>{{ Math.round(match.white.change) }})
 								</span>
 							</div>
 						</span>
@@ -29,10 +33,13 @@
 						<span v-bind:class="getPlayerColor(match, 'black')">
 							<div>{{ (match.black.key) }}
 								<span v-if="match.black.gain !== undefined">
-									(+{{ Math.round(Math.abs(match.black.gain)) }})
+									(<span v-if="match.black.gain >= 0">+</span>{{ Math.round(match.black.gain) }})
 								</span>
 								<span v-if="match.black.loss !== undefined">
-									(-{{ Math.round(Math.abs(match.black.loss)) }})
+									(<span v-if="match.black.loss >= 0">+</span>{{ Math.round(match.black.loss) }})
+								</span>
+								<span v-if="match.black.change !== undefined">
+									(<span v-if="match.black.change >= 0">+</span>{{ Math.round(match.black.change) }})
 								</span>
 							</div>
 						</span>

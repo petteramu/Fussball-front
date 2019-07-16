@@ -2,7 +2,7 @@
 	<div
 		id="RoundBasedMatchHistory">
 		<h2>Matches</h2>
-		<h3>Round {{ this.activeRound + 1 }}</h3>
+		<h3>Round {{ this.activeRound + 1 }}/{{ rounds.length }}</h3>
 		<button
 			:disabled="activeRound === 0"
 			@click="previous">
@@ -62,6 +62,10 @@ export default {
 button {
 	margin: 0px 15px 10px 15px;
 	width: 100px;
+}
+
+button[disabled="disabled"] {
+	background: grey;
 }
 
 @media screen 

@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #PlayerSelector {
 	display: inline-block;
 	padding: 10px;
@@ -74,17 +74,26 @@ export default {
 }
 
 .player {
+	cursor: pointer;
 	padding: 8px;
 	background: #e9e9e9;
-}
 
-.player:nth-child(even) {
-	background: #f5f5f5;
-}
+	&:hover {
+		background: $primaryDarkBlue !important;
+		color: white !important;
+	}
 
-.active {
-	background: #4E8098 !important;
-	color: white;
+	&:nth-child(even) {
+		background: #f5f5f5;
+		&.active {
+			background: $primaryHoverColor;
+		}
+	}
+
+	&.active {
+		background: $primaryHoverColorOffset;
+		color: $primaryHoverText;
+	}
 }
 
 h3 {

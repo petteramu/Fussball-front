@@ -3,7 +3,7 @@ node_modules
 /dist
 
 src/configs/FirebaseConfig.js
-src/configs/FirebaseConfig.js
+src/configs/LambdaConfig.js
 
 # local env files
 .env.local

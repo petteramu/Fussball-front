@@ -4,12 +4,14 @@
 			id="RoundRobinOptions"
 			v-if="!rankings">
 			<h3>Options</h3>
-			<label
-				for="doubleCheckbox"><b>Double</b></label>
-			<input
+			<div
 				id="doubleCheckbox"
 				type="checkbox"
-				v-model="double">
+				@click="double = !double">
+				<span v-if="double">&#10003</span>
+				</div>
+			<label
+				for="doubleCheckbox"><b>Double</b></label>
 
 		</div>
 
@@ -84,5 +86,21 @@ export default {
 	padding: 0 15px 15px 15px;
 	display: inline-block;
 	min-width: 200px;
+}
+
+label {
+	vertical-align: super;
+	margin-left: 5px;
+}
+
+#doubleCheckbox {
+	width: 20px;
+	height: 20px;
+	border: 1px solid black;
+	display: inline-block;
+	font-size: 22px;
+	text-align: center;
+	line-height: 20px;
+	cursor: pointer;
 }
 </style>

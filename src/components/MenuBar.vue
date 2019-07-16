@@ -10,7 +10,7 @@
 				<div class="mobileHeader">Menu &#9776;</div>
 				<a href="#" @click="showAddGameForm($event)">Submit game</a>
 				<a href="#" v-on:click="showAddPlayerForm($event)">Add player</a>
-				<router-link to="/roundRobin">Create round robin</router-link>
+				<router-link to="/roundRobin">Tournament</router-link>
 			</div>
 		</div>
 	</div>
@@ -46,6 +46,7 @@ export default {
 	width: 100%;
 	margin-bottom: 15px;
 	position: relative;
+	box-sizing: content-box;
 
 	.menuContent {
 		padding: 0 15px 0 15px;
@@ -58,14 +59,24 @@ export default {
 		line-height: 40px;
 	}
 
-	a:first-child {
-		font-size: 18px;
-	}
-	a:not(first-child) {
-		vertical-align: middle;
+	a {
+		text-transform: uppercase;
+		border-bottom: rgba(0, 0, 0, 0) 2px solid;
+		transition: color 0.25s, border 0.25s;
+		&:hover {
+			border-bottom: $primaryHoverColor 2px solid;
+			color:  $primaryHoverColor;
+		}
+		&:first-child {
+			font-size: 18px;
+		}
+		&:not(first-child) {
+			vertical-align: middle;
+		}
 	}
 
 	.collapsible {
+		cursor: pointer;
 		display: inline-block;
 	}
 }
@@ -78,7 +89,8 @@ export default {
 		background: $primaryDarkBlue;
 		position: absolute;
 		display: inline-block;
-		width: 200px;
+		width: fit-content;
+		right: 0;
 		font-size: 14px;
 		letter-spacing: 1px;
 		padding: 0 15px 0 10px;
