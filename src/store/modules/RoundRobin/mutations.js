@@ -136,28 +136,39 @@ export const _calculateMatches = (state, payload) => {
 
 export const calculateMatches = (state, payload) => {
 	const DUMMY = { name: 'BYE' }
-	let players = _.clone(state.rankings)
-
-	let rounds = []
-	for(let i = 0; i < players.length - 1; i++) rounds.push([])
+	let players = _.cloneDeep(state.rankings)
 
 	if(players.length % 2)
 		players.unshift(DUMMY)
+
+	let rounds = []
+	for(let i = 0; i < players.length - 1; i++) rounds.push([])
 
 	for(let i = 0; i < rounds.length; i++) {
 		let round = rounds[i]
 		for(let y = 0; y < players.length / 2; y++) {
 			let player = players[y]
 			let opponent = players[players.length - 1 - y]
+
 			if(player === DUMMY || opponent === DUMMY) continue
+
+			if(player.gamesAsWhite == undefined) player.gamesAsWhite = 0
+			if(opponent.gamesAsWhite == undefined) opponent.gamesAsWhite = 0
+
+			let white = { key: player.name }
+			let black = { key: opponent.name }
+
 			round.push({
-				white: { key: player.name },
-				black: { key: opponent.name },
+				white,
+				black,
 				winner: undefined
 			})
 		}
-		players.splice(1, 0, players.pop())
+		// Rotate the players to change up the matches
+		(players[0] === DUMMY) ? players.splice(1, 0, players.pop()) : players.splice(0, 0, players.pop())
 	}
+
+	rounds = _.shuffle(rounds)
 
 	if(payload.double) {
 		// Duplicate matches but reverse black and white if
@@ -177,6 +188,19 @@ export const calculateMatches = (state, payload) => {
 		}
 		rounds = rounds.concat(reverse)
 	}
-	console.log(rounds)
+	let whiteBlack = {}
+	for(let i = 0; i < rounds.length; i++) {
+		for(let y = 0; y < rounds[i].length; y++) {
+			let match = rounds[i][y]
+			if(whiteBlack[match.white.key] == undefined)
+				whiteBlack[match.white.key] = { white: 0, black: 0 }
+			whiteBlack[match.white.key].white++
+
+			if(whiteBlack[match.black.key] == undefined)
+				whiteBlack[match.black.key] = { white: 0, black: 0 }
+			whiteBlack[match.black.key].black++
+		}
+	}
+	console.log(whiteBlack)
 	Vue.set(state, 'matches', rounds)
 }
